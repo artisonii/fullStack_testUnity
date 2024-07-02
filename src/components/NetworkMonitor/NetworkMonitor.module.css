@@ -1,0 +1,84 @@
+.networkContainer {
+  display: grid;
+  flex-direction: column;
+  /* border: 1px solid red; */
+  font-size: 12px;
+}
+.topSection {
+  padding: 0 10px;
+  /* border: 1px solid rgb(191, 46, 46); */
+  display: flex;
+  gap: 10px;
+  margin: 5px 0;
+}
+.topSection {
+  display: flex;
+  align-items: center;
+}
+.topSection > .testInput {
+  gap: 5px;
+  display: flex;
+  margin-left: auto;
+}
+.filterInput {
+  border: 1px solid rgb(145, 144, 144);
+  outline: none;
+  border-radius: 5px;
+  color: rgb(251, 251, 251);
+  background-color: #0d1117;
+}
+.filterInput::placeholder {
+  color: rgb(145, 144, 144);
+}
+
+input[type="checkbox"] {
+  width: 10px;
+}
+
+.allRequestMidpart {
+  margin-top: 5px;
+  padding: 0 10px;
+  /* border: 1px solid red; */
+  flex-wrap: wrap;
+  display: flex;
+  gap: 10px;
+}
+
+.allrequest {
+  border: 1px solid rgb(145, 144, 144);
+  padding: 2px 10px;
+  text-align: center;
+  margin-right: 5px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.allrequest:hover {
+  background-color: rgb(77, 74, 74);
+}
+
+.otherOptions {
+  /* border: 1px solid red; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+}
+
+.hr {
+  border: 1px solid rgb(80, 79, 79);
+  margin: 10px 0;
+}
+
+.requestbottompart {
+  text-align: center;
+  color: lightgrey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+}
+.table {
+  width: 100%;
+  padding: 0px;
+}
