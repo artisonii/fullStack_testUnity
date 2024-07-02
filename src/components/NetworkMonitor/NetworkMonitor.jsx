@@ -64,7 +64,7 @@ const NetworkMonitor = () => {
                 </div>
 
                 <div className={Styles.testInput}>
-                    <input type="text" placeholder='Test your api' className={Styles.filterInput} onClick={(e) => setLink(e.target.value)} value={link} />
+                    <input type="text" placeholder='Test your api' className={Styles.filterInput} onChange={(e) => setLink(e.target.value)} value={link} />
                     <button onClick={() => makeRequest()}>test api</button>
                 </div>
             </div>
