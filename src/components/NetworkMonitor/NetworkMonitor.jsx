@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Styles from "./NetworkMonitor.module.css"
 import { useSelector } from 'react-redux'
 import axios from 'axios';
+import { JSONTree } from 'react-json-tree';
 
 let requestTypeArr = [
     { heading: "All", value: "all" },
@@ -21,8 +22,11 @@ let requestTypeArr = [
 const NetworkMonitor = () => {
     const monitorSelector = useSelector((store) => store.requestDetails)
     const [requestDetailsFilter, setRequestDetailsFilter] = useState([])
+    const [rightSidePannel, setRightSidePannel] = useState(false)
     const [selectFilter, setFilter] = useState("all")
     const [link, setLink] = useState("https://jsonplaceholder.typicode.com/albums")
+    const [requestData, setRequestData] = useState({})
+    const [selectedSection, setSelectedSection] = useState("Headers")
 
     const makeRequest = async () => {
         try {
@@ -44,6 +48,22 @@ const NetworkMonitor = () => {
         }
 
     }, [selectFilter, monitorSelector])
+
+    const handleClick = (e) => {
+        setRightSidePannel(true)
+        setRequestData(e)
+    }
+    const handleSelectSection = (e) => {
+        setSelectedSection(e)
+    }
+    const isValidJSON = (jsonString) => {
+        try {
+            JSON.parse(jsonString);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    };
     console.log(monitorSelector)
     return (
         <div className={Styles.networkContainer}>
@@ -103,16 +123,21 @@ const NetworkMonitor = () => {
                         <a href="#">Learn more</a>
                     </div>
                 </div>) : (
-                    <div>
-                        <table className={Styles.table}>
+                    <div className={Styles.requestPanel}>
+                        <table className={Styles.table} style={{ width: rightSidePannel ? "20%" : "100%" }}>
                             <thead>
-                                <tr>
-                                    <td>Name</td>
-                                    <td>Status</td>
-                                    <td>Type</td>
-                                    <td>Initiator</td>
-                                    <td>Size</td>
-                                    <td>Time</td>
+                                <tr style={{ fontSize: "larger" }}>
+                                    <td >Name</td>
+                                    {
+                                        !rightSidePannel && <>
+                                            <td>Status</td>
+                                            <td>Type</td>
+                                            <td>Initiator</td>
+                                            <td>Size</td>
+                                            <td>Time</td>
+                                        </>
+                                    }
+
                                 </tr>
 
                             </thead>
@@ -120,19 +145,91 @@ const NetworkMonitor = () => {
 
                                 {
                                     requestDetailsFilter.map((ele, ind) => {
-                                        return <tr key={ind}>
-                                            <td>{ele.name}</td>
-                                            <td>{ele.status}</td>
-                                            <td>{ele.type}</td>
-                                            <td>{ele.url}</td>
-                                            <td>{Math.round(ele.size / 1024)} Kb</td>
-                                            <td>{Math.round(ele.duration)} ms</td>
+                                        return <tr key={ind} >
+                                            <td onClick={() => handleClick(ele)} style={{ cursor: "pointer" }}>{ele.name}</td>
+                                            {
+                                                !rightSidePannel && <>
+                                                    <td>{ele.status}</td>
+                                                    <td>{ele.type}</td>
+                                                    <td>{ele.url}</td>
+                                                    <td>{Math.round(ele.size / 1024)} Kb</td>
+                                                    <td>{Math.round(ele.duration)} ms</td>
+                                                </>
+                                            }
+
                                         </tr>
                                     })
                                 }
 
                             </tbody>
                         </table>
+                        {
+                            rightSidePannel && <div className={Styles.responseDetails} >
+                                <div className={Styles.responseHeader}>
+                                    <span onClick={() => setRightSidePannel(false)}>⨉</span>
+                                    {
+                                        ["Headers", "Preview", "Response", "Initiator", "Timing"].map((e, ind) => {
+                                            return <span key={ind} onClick={() => handleSelectSection(e)} className={selectedSection === e ? Styles.selectedSection : ""}>{e}</span>
+                                        })
+                                    }
+                                </div>
+                                <div className={Styles.responseDetailsPage}>
+                                    {
+                                        selectedSection === "Headers" && <div className={Styles.headers}>
+                                            <div>
+                                                <span>Request URL</span>
+                                                <span>{requestData.url}</span>
+                                            </div>
+                                            <div>
+                                                <span>Request Method</span>
+                                                <span>{requestData.method}</span>
+                                            </div>
+                                            <div>
+                                                <span>Status</span>
+                                                <span>{requestData.status}</span>
+                                            </div>
+                                            <div>
+                                                <span>duration</span>
+                                                <span>{Math.round(requestData.duration)}ms</span>
+                                            </div>
+                                            <div>
+                                                <span>size</span>
+                                                <span>{Math.round(requestData.size / 1024)}Kb</span>
+                                            </div>
+                                            {
+                                                requestData.statusText && <div>
+                                                    <span>statusText</span>
+                                                    <span>{requestData.statusText}</span>
+                                                </div>
+                                            }
+
+                                            <div>
+                                                <span>time</span>
+                                                <span>{requestData.time}</span>
+                                            </div>
+                                            <div>
+                                                <span>type</span>
+                                                <span>{requestData.type}</span>
+                                            </div>
+                                        </div>
+                                    }
+                                    {
+                                        selectedSection === "Preview" && <pre>{isValidJSON(requestData.responseText) ? JSON.stringify(JSON.parse(requestData.responseText), null, 2) : "Not a valid json"}</pre>
+                                    }
+                                    {
+                                        selectedSection === "Response" && <pre>{isValidJSON(requestData.responseText) ? JSON.stringify(JSON.parse(requestData.responseText), null, 2) : JSON.stringify(requestData.responseText)}</pre>
+                                    }
+                                    {
+                                        selectedSection === "Initiator" && <div><h1 style={{ color: "gray", textAlign: "center" }}>This request has no initiator data.</h1></div>
+                                    }
+                                    {
+                                        selectedSection === "Timing" && <div style={{ fontSize: "larger", padding: "10px" }}>Request has taken {Math.round(requestData.duration)}ms to complete </div>
+                                    }
+
+                                </div>
+                            </div>
+                        }
+
                     </div>
                 )
             }

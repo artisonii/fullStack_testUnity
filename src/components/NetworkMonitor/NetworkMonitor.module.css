@@ -67,7 +67,7 @@ input[type="checkbox"] {
 
 .hr {
   border: 1px solid rgb(80, 79, 79);
-  margin: 10px 0;
+  margin-top: 10px;
 }
 
 .requestbottompart {
@@ -80,5 +80,41 @@ input[type="checkbox"] {
 }
 .table {
   width: 100%;
+  height: min-content;
   padding: 0px;
+}
+.requestPanel {
+  border-bottom: 1px solid lightgrey;
+  max-height: 90vh;
+  display: flex;
+}
+.responseDetails {
+  /* border: 1px solid red; */
+  width: 80vw;
+  border-left: 1px solid gray;
+}
+.responseHeader {
+  /* border: 1px solid red; */
+  padding: 5px;
+  border-bottom: 1px solid lightgrey;
+  display: flex;
+  gap: 15px;
+  font-size: larger;
+  cursor: pointer;
+}
+.selectedSection {
+  border-bottom: 1px solid gray;
+  color: gray;
+}
+.responseDetailsPage {
+  /* border: 1px solid red; */
+  height: calc(100% - 31px);
+  overflow: auto;
+}
+
+.headers > div {
+  display: grid;
+  padding: 10px;
+  grid-template-columns: 1fr 3fr;
+  font-size: larger;
 }
